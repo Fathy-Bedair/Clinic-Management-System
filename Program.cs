@@ -8,6 +8,7 @@ namespace Clinic_Management_System
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.RegisterConfig(builder.Configuration);
 
             var app = builder.Build();
 
@@ -27,7 +28,7 @@ namespace Clinic_Management_System
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

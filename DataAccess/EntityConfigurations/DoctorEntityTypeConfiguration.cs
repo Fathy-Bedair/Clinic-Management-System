@@ -8,7 +8,7 @@ namespace Clinic_Management_System.DataAccess.EntityConfigurations
         {
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Name).IsRequired().HasColumnType("nvarchar(150)");
-            builder.Property(d => d.phoneNumber).IsRequired().HasColumnType("nvarchar(15)");
+            builder.Property(d => d.PhoneNumber).IsRequired().HasColumnType("nvarchar(15)");
             builder.Property(d => d.ConsultationFee).HasColumnType("decimal(18,2)");
             builder.Property(d => d.YearsOfExperience).IsRequired();
             builder.Property(d => d.IsActive).IsRequired();

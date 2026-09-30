@@ -1,0 +1,101 @@
+﻿@model Doctor
+
+@{
+    ViewData["Title"] = "Add Doctor";
+    Layout = "_AdminLayout";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Add New Doctor</h1>
+    <a asp-area="Admin" asp-controller="Doctors" asp-action="Index" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Doctor Information</h6>
+            </div>
+            <div class="card-body">
+                <form asp-area="Admin" asp-controller="Doctors" asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label font-weight-bold">Full Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g. Dr. Ahmed Ali" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Specialization & Phone Number -->
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="SpecializationId" class="control-label font-weight-bold">Specialization <span class="text-danger">*</span></label>
+                            <!-- الـ ViewBag.Specializations هتيجي من الـ Controller -->
+                            <select asp-for="SpecializationId" class="form-control" asp-items="ViewBag.Specializations">
+                                <option value="">-- Select Specialization --</option>
+                            </select>
+                            <span asp-validation-for="SpecializationId" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="PhoneNumber" class="control-label font-weight-bold">Phone Number <span class="text-danger">*</span></label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="01xxxxxxxxx" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Experience & Fee -->
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="YearsOfExperience" class="control-label font-weight-bold">Years of Experience <span class="text-danger">*</span></label>
+                            <input asp-for="YearsOfExperience" class="form-control" type="number" min="0" />
+                            <span asp-validation-for="YearsOfExperience" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="ConsultationFee" class="control-label font-weight-bold">Consultation Fee (EGP) <span class="text-danger">*</span></label>
+                            <input asp-for="ConsultationFee" class="form-control" type="number" step="0.01" min="0" />
+                            <span asp-validation-for="ConsultationFee" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- System Account ID -->
+                    @*<div class="form-group">
+                        <label asp-for="UserId" class="control-label font-weight-bold">System Account ID <span class="text-danger">*</span></label>
+                        <input asp-for="UserId" class="form-control" placeholder="Enter ASP.NET Identity User ID" />
+                        <span asp-validation-for="UserId" class="text-danger small"></span>
+                        <small class="form-text text-muted">The unique ID of the user account linked to this doctor.</small>
+                    </div>*@
+
+                    <!-- Is Active Switch -->
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input asp-for="IsActive" class="custom-control-input" id="IsActiveSwitch" checked>
+                            <label class="custom-control-label font-weight-bold" for="IsActiveSwitch">Active Status</label>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Action Buttons -->
+                    <div class="form-group mb-0">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-save mr-1"></i> Save Doctor
+                        </button>
+                        <a asp-area="Admin" asp-controller="Doctors" asp-action="Index" class="btn btn-light border">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

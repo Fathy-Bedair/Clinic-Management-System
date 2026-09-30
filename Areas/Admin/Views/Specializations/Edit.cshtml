@@ -1,0 +1,70 @@
+﻿@model Specialization
+
+@{
+    ViewData["Title"] = "Edit Specialization";
+    Layout = "_AdminLayout";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Edit Specialization</h1>
+    <a asp-area="Admin" asp-controller="Specializations" asp-action="Index" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Basic Card Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Update Specialization Details</h6>
+            </div>
+            <div class="card-body">
+                <form asp-area="Admin" asp-controller="Specializations" asp-action="Edit" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!--
+                        الحقل المخفي للـ Id مهم جداً
+                        من غيره، الـ EF Core هيفتكر إنك بتعمل إضافة جديدة أو هيضرب Exception
+                    -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- حقل اسم التخصص -->
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label font-weight-bold">Specialization Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- حقل الوصف -->
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label font-weight-bold">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <hr />
+
+                    <!-- أزرار التحديث والإلغاء -->
+                    <div class="form-group mb-0">
+                        <button type="submit" class="btn btn-warning px-4 text-dark font-weight-bold">
+                            <i class="fas fa-sync-alt mr-1"></i> Update
+                        </button>
+                        <a asp-area="Admin" asp-controller="Specializations" asp-action="Index" class="btn btn-light border">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- تفعيل الفالديشن في جهة المتصفح -->
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,105 @@
+﻿@model Appointment
+
+@{
+    ViewData["Title"] = "Appointment Details";
+    Layout = "_AdminLayout";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Appointment Details</h1>
+    <a asp-area="Admin" asp-controller="Appointments" asp-action="Index" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Appointments
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-calendar-check mr-2"></i> Appointment #@Model.Id
+                </h6>
+                <div>
+                    @switch (Model.Status)
+                    {
+                        case Status.Pending:
+                            <span class="badge badge-warning px-3 py-2">Pending</span>
+                            break;
+                        case Status.Confirmed:
+                            <span class="badge badge-primary px-3 py-2">Confirmed</span>
+                            break;
+                        case Status.Completed:
+                            <span class="badge badge-success px-3 py-2">Completed</span>
+                            break;
+                        case Status.Cancelled:
+                            <span class="badge badge-danger px-3 py-2">Cancelled</span>
+                            break;
+                        case Status.NoShow:
+                            <span class="badge badge-secondary px-3 py-2">No Show</span>
+                            break;
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+
+                <!-- Patient Info -->
+                <div class="row mb-3">
+                    <div class="col-sm-4 font-weight-bold text-gray-800">Patient Name:</div>
+                    <div class="col-sm-8 text-gray-600">
+                        <i class="fas fa-user-injured fa-sm text-muted mr-1"></i> @Model.Patient?.Name
+                    </div>
+                </div>
+                <hr />
+
+                <!-- Doctor Info -->
+                <div class="row mb-3">
+                    <div class="col-sm-4 font-weight-bold text-gray-800">Doctor Name:</div>
+                    <div class="col-sm-8 text-gray-600">
+                        <i class="fas fa-user-md fa-sm text-muted mr-1"></i> Dr. @Model.Doctor?.Name
+                    </div>
+                </div>
+                <hr />
+
+                <!-- Date & Time -->
+                <div class="row mb-3">
+                    <div class="col-sm-4 font-weight-bold text-gray-800">Date & Time:</div>
+                    <div class="col-sm-8 text-gray-600">
+                        <i class="fas fa-calendar-alt fa-sm text-primary mr-1"></i> @Model.AppointmentDate.ToString("dd MMMM yyyy") <br />
+                        <i class="fas fa-clock fa-sm text-primary mr-1 mt-2"></i> @Model.AppointmentTime.ToString("hh:mm tt")
+                    </div>
+                </div>
+                <hr />
+
+                <!-- Reason For Visit -->
+                <div class="row mb-3">
+                    <div class="col-sm-4 font-weight-bold text-gray-800">Reason for Visit:</div>
+                    <div class="col-sm-8 text-gray-600">
+                        @if (!string.IsNullOrEmpty(Model.ReasonForVisit))
+                        {
+                            <p class="mb-0 bg-light p-3 rounded border border-left-primary">@Model.ReasonForVisit</p>
+                        }
+                        else
+                        {
+                            <span class="text-muted font-italic">No reason provided by the patient.</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                @if (Model.Status == Status.Pending || Model.Status == Status.Confirmed)
+                {
+                    <hr />
+                    <div class="text-center mt-4 pt-2">
+                        <form asp-area="Admin" asp-controller="Appointments" asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger px-4 font-weight-bold shadow-sm" onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                <i class="fas fa-times-circle mr-1"></i> Cancel Appointment
+                            </button>
+                        </form>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

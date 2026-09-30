@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Appointment>
+
+@{
+    ViewData["Title"] = "Manage Appointments";
+    Layout = "_AdminLayout";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Appointments</h1>
+</div>
+
+<!-- Filter Form -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-filter mr-1"></i> Filter Appointments</h6>
+    </div>
+    <div class="card-body">
+        <form asp-area="Admin" asp-controller="Appointments" asp-action="Index" method="get" class="form-row align-items-end">
+            <div class="form-group col-md-4 mb-0">
+                <label for="searchDate" class="font-weight-bold">Appointment Date</label>
+                <!-- بنحتفظ بالقيمة اللي اليوزر اختارها في الفيو باج عشان تفضل ظاهرة في الـ Input -->
+                <input type="date" id="searchDate" name="searchDate" class="form-control" value="@ViewBag.SearchDate" />
+            </div>
+
+            <div class="form-group col-md-4 mb-0">
+                <label for="searchStatus" class="font-weight-bold">Status</label>
+                <select id="searchStatus" name="searchStatus" class="form-control">
+                    <option value="">-- All Statuses --</option>
+                    @foreach (var status in Enum.GetValues(typeof(Status)).Cast<Status>())
+                    {
+                        if (ViewBag.SearchStatus != null && (Status)ViewBag.SearchStatus == status)
+                        {
+                            <option value="@status" selected>@status.ToString()</option>
+                        }
+                        else
+                        {
+                            <option value="@status">@status.ToString()</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group col-md-4 mb-0">
+                <button type="submit" class="btn btn-primary px-4"><i class="fas fa-search mr-1"></i> Filter</button>
+                <a asp-action="Index" class="btn btn-light border ml-2">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Appointments Table -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center" style="width: 120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="font-weight-bold">@item.Patient?.Name</td>
+                                <td>@item.Doctor?.Name</td>
+                                <td>@item.AppointmentDate.ToString("dd MMM yyyy")</td>
+                                <td>@item.AppointmentTime.ToString("hh:mm tt")</td>
+                                <td class="text-center">
+                                    <!-- تخصيص الألوان بناءً على الـ Enum اللي في الصورة -->
+                                    @switch (item.Status)
+                                    {
+                                        case Status.Pending:
+                                            <span class="badge badge-warning px-2 py-1">Pending</span>
+                                            break;
+                                        case Status.Confirmed:
+                                            <span class="badge badge-primary px-2 py-1">Confirmed</span>
+                                            break;
+                                        case Status.Completed:
+                                            <span class="badge badge-success px-2 py-1">Completed</span>
+                                            break;
+                                        case Status.Cancelled:
+                                            <span class="badge badge-danger px-2 py-1">Cancelled</span>
+                                            break;
+                                        case Status.NoShow:
+                                            <span class="badge badge-secondary px-2 py-1">No Show</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <!-- Details Button -->
+                                    <a asp-area="Admin" asp-controller="Appointments" asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-circle btn-sm" title="View Details">
+                                        <i class="fas fa-list-alt"></i>
+                                    </a>
+
+                                    <!-- Cancel Button (يظهر فقط لو الحجز معلق أو مؤكد) -->
+                                    @if (item.Status == Status.Pending || item.Status == Status.Confirmed)
+                                    {
+                                        <a asp-area="Admin" asp-controller="Appointments" asp-action="Cancel" asp-route-id="@item.Id" class="btn btn-danger btn-circle btn-sm ml-1" title="Cancel Appointment" onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No appointments found matching your criteria.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // بنقفل الـ Search بتاع الداتا تيبل عشان إحنا عاملين Custom Filter فوق
+            $('#dataTable').DataTable({
+                "searching": false,
+                "order": [[2, "desc"], [3, "asc"]] // ترتيب افتراضي بالتاريخ والوقت
+            });
+        });
+    </script>
+}
